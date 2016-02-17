@@ -25,12 +25,34 @@ class SimpleServer
         # Acknowledge the server is running.
         puts "Server started.  Listening on port #{@port}."
 
-        # Wait for requests.
+        # Wait for a connection.
         loop do
-            client = server.accept
-            client.puts http_response
-            client.puts message_body 
-            client.close
+            # Accept the connection.
+            socket = server.accept
+
+            # Print the http request sent from the browser.
+            # Ensure that the next line returned by the socket
+            # does is not nil, or the while loop will hang.
+            # Note: Some browser will send multiple http_requests
+            #       e.g. chrome, opera
+            puts "*** CONNECTION INITIATED  ***\n\n"
+            while next_line_readable?(socket) 
+                puts socket.gets.chomp
+            end
+                
+            # Send http response to the browser.
+            socket.puts http_response
+            socket.puts message_body 
+
+            # Close the connection.
+            socket.close
         end
     end
+
+    # Returns false if the next line returned by a socket is nil.
+    def next_line_readable?(socket)
+        readfds, writefds, exceptfds = select([socket], nil, nil, 0.1)
+        readfds # Will be nil if next line cannot be read
+    end
+
 end
