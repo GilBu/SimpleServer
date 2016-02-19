@@ -1,6 +1,7 @@
  #!/usr/bin/ruby
 
 require 'socket'
+require_relative 'Request.rb'
 
 class SimpleServer
     def initialize(port)
@@ -36,10 +37,12 @@ class SimpleServer
             # Note: Some browser will send multiple http_requests
             #       e.g. chrome, opera
             puts "*** CONNECTION INITIATED  ***\n\n"
-            while next_line_readable?(socket) 
-                puts socket.gets.chomp
-            end
-                
+            #while next_line_readable?(socket) 
+                #puts socket.gets.chomp
+            #end
+            Request.new(socket).parse 
+
+            puts "\n*** CONNECTION TERMINATED ***\n\n"
             # Send http response to the browser.
             socket.puts http_response
             socket.puts message_body 
