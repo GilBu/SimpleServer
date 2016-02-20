@@ -23,7 +23,7 @@ class Request
         end
 
         # Print the request to the console.
-        puts "#{@verb} #{@uri} #{@version}"
+        puts "\n#{@verb} #{@uri} #{@version}"
         @headers.each do |key, value|
             puts "#{key}: #{value}"
         end
