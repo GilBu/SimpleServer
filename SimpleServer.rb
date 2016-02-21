@@ -10,6 +10,7 @@ class SimpleServer
     end
 
     def start
+        # Open a socket on the specified port.
         server = TCPServer.open @port 
 
         # Acknowledge the server is running.
@@ -20,9 +21,9 @@ class SimpleServer
             # Accept the connection.
             socket = server.accept
             # Parse the http request.
-            Request.new(socket).parse 
+            http_request = Request.new(socket).parse 
             # Send the http response.
-            socket.puts Response.new.to_s
+            socket.puts Response.new(http_request).to_s
             # Close the connection.
             socket.close
         end

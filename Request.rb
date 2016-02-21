@@ -5,6 +5,11 @@ class Request
         @stream = stream
     end
 
+    # Public : Parses a stream for http requests.
+    #
+    # streanm - An accepted socket connection. 
+    #
+    # Returns The http request string (temp)
     def parse
         @headers = Hash.new
          
@@ -22,17 +27,32 @@ class Request
             end
         end
 
-        # Print the request to the console.
-        puts "\n#{@verb} #{@uri} #{@version}"
+        ### REMOVE LATER ###
+        # Build and return the request string so the 
+        # server can send it to the client for testing.
+        str_builder =  "#{@verb} #{@uri} #{@version}<br>\n"
         @headers.each do |key, value|
-            puts "#{key}: #{value}"
+            str_builder << "#{key}: #{value}<br>\n"
         end
+
+        # Print the request string to the console running the server.
+        puts "\n#{str_builder}\n"
+
+        # Return the request string so the server can send it in the
+        # body of the response to the client. 
+        return str_builder
+        ### END REMOVE LATER ###
     end
 
-    # Returns false if the next line returned by a socket is nil.
-    def next_line_readable?(socket)
+     # Private: Checks if the socket is going to return another line. 
+     #          Times out after 0.1 secs.
+     #
+     # socket - A socket connection waiting to be read.
+     #
+     # Returns NIL if the next line cannot be read.
+    private def next_line_readable?(socket)
         readfds, writefds, exceptfds = select([socket], nil, nil, 0.1)
-        readfds # Will be nil if next line cannot be read
+        readfds
     end
 
 end
