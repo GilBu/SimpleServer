@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 class ConfigFile
-    def initialize
+    def initialize(config_array)
         # Do something
     end
 

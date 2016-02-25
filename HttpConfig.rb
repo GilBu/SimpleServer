@@ -1,8 +1,10 @@
 #!/usr/bin/ruby
 
-class HttpConfig
-    def initialize(config_array)
-        # Do something
+require "./ConfigFile"
+
+class HttpConfig < ConfigFile
+    def initialize(config_file)
+        super(config_file)
     end
 
     # Implement me.
