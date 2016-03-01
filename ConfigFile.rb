@@ -4,21 +4,24 @@ class ConfigFile
 
     def initialize(new_config)
         # Do something
-        @config_array = new_config
+        @lines = new_config
     end
 
-    # Implement me.
+   # Split array of line into array of tokens.
+    def load
+        # Strip out blank and comment lines.
+        # Returns array.  0 element is the key
+        # 0 < elements are the values.  
+        # Modify in place using !. 
+        @lines.select! do |line|
+            line.strip.length != 0
+        end.select! do |line|
+            line[0] != '#'
+        end.map! do |line|
+            line.split(" ")
+        end
 
-    def process_line()
-
-    	@config_hash = {}
-
-    	@config_array.each do |key_value_pair|
-    		key , value = key_value_pair.split(" ")
-    		@config_hash[key.to_sym] = value
-    	end
-
-    	@config_hash
+        self
     end
 
 end

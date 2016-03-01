@@ -1,8 +1,10 @@
  #!/usr/bin/ruby
 
 require 'socket'
+require 'pathname'
 require_relative 'Request.rb'
 require_relative 'Response.rb'
+require_relative 'ConfigFile.rb'
 require_relative 'HttpConfig.rb'
 require_relative 'MimeTypes.rb'
 
@@ -17,8 +19,25 @@ class SimpleServer
     #
     #   SimpleServer.new(8080).start
     def start
-        @httpd_config = HttpConfig.new(read_config_file("httpd.conf"))
-        @mime_types = MimeTypes.new(read_config_file("mime_types.conf"))
+        @httpd_config = HttpConfig.new(read_config_file("httpd.conf")).load.process_lines
+        @mime_types = MimeTypes.new(read_config_file("mime.types")).load.process_lines
+
+        # Check the document root for a .htaccess file.
+        if htaccess?(@httpd_config.document_root)
+            p "FOUND IT!"
+        else
+            p "NO .htaccess file..."
+        end
+
+        # Test calls to config objects.
+        #p @httpd_config.listen
+        #p @httpd_config.server_root
+        #p @httpd_config.document_root
+        #p @httpd_config.log_file
+        #p @httpd_config.script_alias("/cgi-bin/")
+        #p @httpd_config.alias("/ab/")
+        #p @httpd_config.alias("/~traciely/")
+        #p @mime_types.for("html")
 
         # Open a socket on the specified port.
         server = TCPServer.open @port 
@@ -65,6 +84,10 @@ class SimpleServer
             
         # Return the array.
         config_array 
+    end
+
+    def htaccess?(document_root)
+        Pathname.new(document_root.concat(".htaccess")).exist?
     end
 
 end
