@@ -1,13 +1,15 @@
 #!/usr/bin/ruby
 
 class Request
+    attr_reader :verb, :uri, :version, :headers, :body
+
     def initialize(stream)
         @stream = stream
     end
 
     # Public : Parses a stream for http requests.
     #
-    # streanm - An accepted socket connection. 
+    # stream - An accepted socket connection. 
     #
     # Returns The http request string (temp)
     def parse
@@ -26,6 +28,7 @@ class Request
                 @body = line
             end
         end
+
 
         ### REMOVE LATER ###
         # Build and return the request string so the 

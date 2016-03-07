@@ -1,6 +1,11 @@
 #!/usr/bin/ruby
 
 class Response
+
+    # Add params lists.
+    # Add response code hash.
+    # Add inner class for headers - with to_s method.
+
     def initialize(body)
         @version = 1.1
         @response_code = 200

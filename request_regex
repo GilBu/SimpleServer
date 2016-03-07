@@ -1,7 +1,0 @@
-# Request pattern.
-/^[A-Z]* \/.* HTTP\/[0-9].[0-9]$/.match("HEAD /home/seb/index.html HTTP/1.0")
-# Header pattern.
-/^[A-Z].*: .*$/.match("Host: 127.0.0.1:8080")
-# Body pattern.
-/^<[a-z]*>.*<\/[a-z]*>$/.match("<html><head></head><body><h1>Hello, World!!</html>")
-
