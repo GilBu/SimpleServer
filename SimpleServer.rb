@@ -1,10 +1,13 @@
  #!/usr/bin/ruby
 
 require 'socket'
-require_relative 'Request.rb'
-require_relative 'Response.rb'
-require_relative 'HttpConfig.rb'
-require_relative 'MimeTypes.rb'
+require 'pathname'
+require_relative 'ServerWorker.rb'
+require_relative 'Logger.rb'
+require_relative 'http/Request.rb'
+require_relative 'http/Response.rb'
+require_relative 'http/config/HttpConfig.rb'
+require_relative 'http/config/MimeTypes.rb'
 
 class SimpleServer
     def initialize(port)
@@ -17,11 +20,21 @@ class SimpleServer
     #
     #   SimpleServer.new(8080).start
     def start
-        @httpd_config = HttpConfig.new(read_config_file("httpd.conf"))
-        @mime_types = MimeTypes.new(read_config_file("mime_types.conf"))
+        @httpd_config = HttpConfig.new(read_config_file("httpd.conf")).load.process_lines
+        @mime_types = MimeTypes.new(read_config_file("mime.types")).load.process_lines
+
+        # Check the document root for a .htaccess file.
+        #if htaccess?(@httpd_config.document_root)
+            #p "FOUND IT!"
+        #else
+            #p "NO .htaccess file..."
+        #end
 
         # Open a socket on the specified port.
         server = TCPServer.open @port 
+
+        # Create logger object.
+        logger = Logger.new(@httpd_config.log_file)
 
         # Acknowledge the server is running.
         puts "Server started.  Listening on port #{@port}.\n"
@@ -29,13 +42,19 @@ class SimpleServer
         # Wait for a connection.
         loop do
             # Accept the connection.
-            socket = server.accept
+            #Thread.new{ServerWorker.new(server.accept).process_request}
+            #
+            # WHY ARE WE INTANTIATING A LOGGER HERE AND PASSING IT TO
+            # SERVER WORKER CLASS IF IT HAS EVERYTHING IT NEEDS TO INSTANTIATE
+            # ITS OWN? 
+            ServerWorker.new(server.accept, @http_config, logger).process_request
+            #socket = server.accept
             # Parse the http request.
-            http_request = Request.new(socket).parse 
+            #http_request = Request.new(socket).parse 
             # Send the http response.
-            socket.puts Response.new(http_request).to_s
+            #socket.puts Response.new(http_request).to_s
             # Close the connection.
-            socket.close
+            #socket.close
         end
     end
 
@@ -65,6 +84,10 @@ class SimpleServer
             
         # Return the array.
         config_array 
+    end
+
+    def htaccess?(document_root)
+        Pathname.new(document_root.concat(".htaccess")).exist?
     end
 
 end
