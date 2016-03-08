@@ -47,7 +47,7 @@ class SimpleServer
             # WHY ARE WE INTANTIATING A LOGGER HERE AND PASSING IT TO
             # SERVER WORKER CLASS IF IT HAS EVERYTHING IT NEEDS TO INSTANTIATE
             # ITS OWN? 
-            ServerWorker.new(server.accept, @http_config, logger).process_request
+            ServerWorker.new(server.accept, @http_config, logger, @mime_types).process_request
             #socket = server.accept
             # Parse the http request.
             #http_request = Request.new(socket).parse 
