@@ -9,7 +9,8 @@ class Resource
 
     # Return the absolute path of the resource.
     def resolve
-        "http_conf.document_root#{@uri}" 
+        # Trime the first character '/' from the uri.
+        "#{@http_conf.document_root}#{@uri[1..-1]}" 
     end
 
     # Return resource mime_type.

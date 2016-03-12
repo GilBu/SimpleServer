@@ -1,30 +1,27 @@
  #!/usr/bin/ruby
 
 require_relative "Resource.rb"
+require_relative "http/Request.rb"
+require_relative "ResponseFactory.rb"
 
 class ServerWorker
-    # Public:  Operates on an independant thread made in SimpleServer
-
-    def initialize(socket, config, logger)
+    def initialize(socket, config, mimes, logger)
         @client = socket
         @config = config
+        @mimes = mimes
         @logger = logger
     end
 
     def process_request
         # Parse the http request.
-        http_request = Request.new(@client) 
-        # Get resource.
-        # NOT CERTAIN HOW WE GET A mime_type OBJECT HERE.      
-#       resource = Resource.new(http_request.uri, @config, mime_types)
-        # Send the http response.
-       http_response = Response.new(http_request.parse)
-       # CANT USE THE FACTORY WITHOUT THE RESOURCE.
-  #     response =  ResponseFactory.create(http_request,resource) 
-        @client.puts(http_response.to_s)
-        # Remember to close the connection.
-        @client.close
-        # Log request.
-        @logger.write(http_request, http_response)
+       request = Request.new(@client).parse
+       resource = Resource.new(request.uri, @config, @mimes)
+       # Factory needed a resource so I had to add a mimes object as a memeber. 
+       # Create the response.
+       response =  ResponseFactory.create(request ,resource) 
+       @client.puts(response)
+       @client.close
+       # Log request.
+       @logger.write(request, response)
     end
 end

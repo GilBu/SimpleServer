@@ -29,7 +29,6 @@ class Request
             end
         end
 
-
         ### REMOVE LATER ###
         # Build and return the request string so the 
         # server can send it to the client for testing.
@@ -43,8 +42,8 @@ class Request
 
         # Return the request string so the server can send it in the
         # body of the response to the client. 
-        return str_builder
         ### END REMOVE LATER ###
+        self
     end
 
      # Private: Checks if the socket is going to return another line. 

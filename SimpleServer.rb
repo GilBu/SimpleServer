@@ -20,41 +20,31 @@ class SimpleServer
     #
     #   SimpleServer.new(8080).start
     def start
+        # Load configs.
         @httpd_config = HttpConfig.new(read_config_file("httpd.conf")).load.process_lines
         @mime_types = MimeTypes.new(read_config_file("mime.types")).load.process_lines
 
         # Check the document root for a .htaccess file.
-        #if htaccess?(@httpd_config.document_root)
-            #p "FOUND IT!"
-        #else
-            #p "NO .htaccess file..."
-        #end
+        if htaccess?(@httpd_config.document_root)
+            p "Found htaccess file..."
+        else
+            p "NO .htaccess file..."
+        end
+
+        # Create logger object.  Arg is log file path from httpd object.
+        logger = Logger.new(@httpd_config.log_file)
 
         # Open a socket on the specified port.
         server = TCPServer.open @port 
-
-        # Create logger object.
-        logger = Logger.new(@httpd_config.log_file)
 
         # Acknowledge the server is running.
         puts "Server started.  Listening on port #{@port}.\n"
 
         # Wait for a connection.
         loop do
-            # Accept the connection.
-            #Thread.new{ServerWorker.new(server.accept).process_request}
-            #
-            # WHY ARE WE INTANTIATING A LOGGER HERE AND PASSING IT TO
-            # SERVER WORKER CLASS IF IT HAS EVERYTHING IT NEEDS TO INSTANTIATE
-            # ITS OWN? 
-            ServerWorker.new(server.accept, @http_config, logger).process_request
-            #socket = server.accept
-            # Parse the http request.
-            #http_request = Request.new(socket).parse 
-            # Send the http response.
-            #socket.puts Response.new(http_request).to_s
-            # Close the connection.
-            #socket.close
+#            Thread.new do
+                ServerWorker.new(server.accept, @httpd_config, @mime_types, logger).process_request
+#            end
         end
     end
 
@@ -87,7 +77,7 @@ class SimpleServer
     end
 
     def htaccess?(document_root)
-        Pathname.new(document_root.concat(".htaccess")).exist?
+        Pathname.new(File::join(document_root, ".htaccess")).exist?
     end
 
 end

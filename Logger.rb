@@ -7,15 +7,16 @@ class Logger
 
     def write(request, response)
         # Open log file for writting.
-        log = File.open(@filepath, "a")
+        @file = File.open(@filepath, "a")
         
-        # Form log entry - PROPER HEADERS NEED TO BE SELECTED.
+        # Log entry
         request.headers.each do |key, value|
-            log.write("#{key}: #{value}\n")
+            # PROPER HEADERS NEED TO BE SELECTED.
+            @file.write("#{key}: #{value}\n")
         end
         
         # Close log fil.
-        log.close
+        @file.close
     end
 
 end
