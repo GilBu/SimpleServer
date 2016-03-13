@@ -1,0 +1,6 @@
+AuthName "CSc667"
+AuthUserFile /path/to/auth/file
+AuthType basic
+Require valid-user
+Order deny,allow
+Deny from all

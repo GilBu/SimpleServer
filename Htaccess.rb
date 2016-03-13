@@ -6,6 +6,11 @@ class Htaccess < ConfigFile
     end
     
     def auth_user_file
-        # Implement me.
+        @config = Hash.new
+
+        # Split config lines into key value pairs.
+        @lines.each do |line|
+            @config[line[0]] = line[1]
+        end
     end
 end
