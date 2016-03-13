@@ -9,11 +9,28 @@ class Resource
 
     # Return the absolute path of the resource.
     def resolve
-        # Trime the first character '/' from the uri.
-        "#{@http_conf.document_root}#{@uri[1..-1]}" 
+       # Isolate uri directory path.
+       dir_path = @uri[/^\/[a-zA-Z\/]*\//]
+       # Check if uri directory path is aliased.
+       if @http_conf.alias(dir_path) != nil
+            # Uri directory path was aliased. Replace the alias 
+            # and store the uri it points to.
+            path = "#{@uri.sub(dir_path, @http_conf.alias(@uri[dir_path]))}" 
+       else
+            # Not aliased.  Store the uri path to be resolved.
+            path = "#{@http_conf.document_root}#{@uri[1..-1]}" 
+       end
+
+       # If the uri is a directory path, append the index file. Else, it is
+       # an absolute path to the file being resolved.
+       if path[-1].eql?('/')
+           "#{path}index.html"
+       else
+           path
+       end
     end
 
-    # Return resource mime_type.
+    # Returns resource mime_type.
     def mime_type
         # Split uri on the extension and take the last element
         # element from the resulting array.
