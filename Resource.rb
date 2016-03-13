@@ -10,8 +10,9 @@ class Resource
     # Return the absolute path of the resource.
     def resolve
        # Isolate uri directory path.
-       dir_path = @uri[/^\/[a-zA-Z\/]*\//]
+       dir_path = @uri[/^\/[\S\/]*\//]
        # Check if uri directory path is aliased.
+       p dir_path
        if @http_conf.alias(dir_path) != nil
             # Uri directory path was aliased. Replace the alias 
             # and store the uri it points to.
