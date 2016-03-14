@@ -15,9 +15,9 @@ class Resource
        dir_path = @uri[/^\/[\S\/]*\//] if @uri != nil
        # Check if uri directory path is aliased.
        if @http_conf.alias(dir_path) != nil
-            # Uri directory path was aliased. Replace the alias 
+            # Uri directory path was aliased. Replace the alias
             # and store the uri it points to.
-            path = "#{@uri.sub(dir_path, @http_conf.alias(@uri[dir_path]))}" 
+            path = "#{@uri.sub(dir_path, @http_conf.alias(@uri[dir_path]))}"
        else
             # Not aliased.  Store the uri path to be resolved.
             path = "#{@http_conf.document_root}#{@uri[1..-1]}" if @uri != nil
@@ -26,9 +26,11 @@ class Resource
        # If the uri is a directory path, append the index file. Else, it is
        # an absolute path to the file being resolved.
        if path != nil && path[-1].eql?('/')
-           "#{path}index.html"
+          #p path
+            @uri = path << "index.html"
        else
-           path
+           #p path
+           @uri = path
        end
     end
 

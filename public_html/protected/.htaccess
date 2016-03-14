@@ -1,4 +1,4 @@
-AuthUserFile "/home/sebastian/development/ruby/SimpleServer/protected_html/.htpasswd"
-AuthType     Basic
-AuthName     "Password Required"  
-Require      valid-user
+AuthUserFile "/home/sebastian/development/ruby/SimpleServer/public_html/protected/.htpasswd"
+AuthType    Basic
+AuthName    "Password Required"  
+Require     valid-user
