@@ -1,0 +1,4 @@
+    def htaccess?(document_root)
+        Pathname.new(File::join(document_root, ".htaccess")).exist?
+    end
+

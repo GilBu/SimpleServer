@@ -16,9 +16,8 @@ class ServerWorker
         # Parse the http request.
        request = Request.new(@client).parse
        resource = Resource.new(request.uri, @config, @mimes)
-       # Factory needed a resource so I had to add a mimes object as a memeber. 
-       # Create the response.
-       response =  ResponseFactory.create(request ,resource) 
+       # Factory needed a resource so I had to add a mimes object as a member. # Create the response.
+       response =  ResponseFactory.create(request ,resource, @config) 
        @client.puts(response)
        @client.close
        # Log request.

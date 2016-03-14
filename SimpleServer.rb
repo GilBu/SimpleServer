@@ -24,16 +24,6 @@ class SimpleServer
         @httpd_config = HttpConfig.new(read_config_file("httpd.conf")).load.process_lines
         @mime_types = MimeTypes.new(read_config_file("mime.types")).load.process_lines
 
-#        p @httpd_config.class
-#        p @httpd_config.alias("/alias/")
-
-        # Check the document root for a .htaccess file.
-        if htaccess?(@httpd_config.document_root)
-            p "Found htaccess file..."
-        else
-            p "NO .htaccess file..."
-        end
-
         # Create logger object.  Arg is log file path from httpd object.
         logger = Logger.new(@httpd_config.log_file)
 
@@ -78,9 +68,4 @@ class SimpleServer
         # Return the array.
         config_array 
     end
-
-    def htaccess?(document_root)
-        Pathname.new(File::join(document_root, ".htaccess")).exist?
-    end
-
 end

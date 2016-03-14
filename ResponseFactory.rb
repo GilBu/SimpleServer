@@ -5,12 +5,12 @@ require_relative 'HtaccessChecker'
 
 class ResponseFactory
     #  Call like a static method =  ResponseFactory.create(http_request, resource)
-    def self.create(request, resource)
+    def self.create(request, resource, httpd_config)
         # Check request format is valid. If not throw a 400 response.
 #        p "Resource: #{resource.resolve}"
 #        p "MimeType: #{resource.mime_type}"
         # 
-        htaccessChecker = HtaccessChecker.new(resource.resolve, request.headers)
+        htaccessChecker = HtaccessChecker.new(resource.resolve, request.headers, httpd_config)
         if htaccessChecker.protected?
             p "Protected directory!"
             # Check for Authorization header.

@@ -33,6 +33,10 @@ class HttpConfig < ConfigFile
         @config["DocumentRoot"]
     end
 
+    def access_file
+        @config["AccessFileName"]
+    end
+
     def server_root
         @config["ServerRoot"]
     end

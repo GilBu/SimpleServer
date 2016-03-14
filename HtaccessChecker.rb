@@ -3,9 +3,10 @@
 require 'pathname'
 
 class HtaccessChecker
-    def initialize(path, headers)
+    def initialize(path, headers, httpd_config)
         @path = path
         @headers = headers
+	@httpd_config = httpd_config
     end
     
     def protected?
@@ -18,7 +19,7 @@ class HtaccessChecker
             root << directory << '/'
             # Prints the series of directories being searched for htaccess.
            # p "#{root}"
-            if Pathname.new(File::join(root, ".htaccess")).exist?
+            if Pathname.new(File::join(root, @httpd_config.access_file)).exist?
                 # htaccess found.
                 return true
             end
