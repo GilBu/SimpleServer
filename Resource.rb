@@ -43,6 +43,6 @@ class Resource
 
     # Return true if a script resource was requested.
     def script?
-        # Implement me.
+        @uri.include?(@http_conf.script_alias("/cgi-bin/"))
     end
 end

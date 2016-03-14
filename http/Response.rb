@@ -12,8 +12,7 @@ class Response
         @response_code = response_code
         @response_phrase = get_phrase(response_code)
         @headers = Hash.new 
-        #@body = '<!DOCTYPE html><html><head></head><body>Hello, CSc667!</body></html>'
-        @body = "<!DOCTYPE html><html><head></head><body><h3>Request string sent from the client (this browser):</h3><p>#{body}</p></body></html>"
+        @body = "#{body}"
     end
 
     # Public : Builds the http response string.
@@ -29,7 +28,7 @@ class Response
         "Connection: close\n"\
         "Server: csc667 Server Project\n"\
         "Content-Type: text/html\n"\
-        "Content-Length: #{@body}.length\n"\
+        "Content-Length: #{@body.length}\n"\
         "Last-Modified: #{Time.now}\n"\
         "#{headers}\n\n"\
         "#{@body}"

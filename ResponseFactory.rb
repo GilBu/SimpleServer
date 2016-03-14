@@ -20,11 +20,7 @@ class ResponseFactory
                     if htaccessChecker.authorized?
                         p "Authorized user."
                         # Check if file exists.
-                        if Pathname.new(resource.uri).exist?
-                            return Response.new(200, "File exists.")
-                        else
-                            return Response.new(404, "File does not exist")
-                        end
+                        handle_request(request, resource)
                     else
                         p "Unauthorized user."
                         return Response.new(403, "Not Authorized.")
@@ -47,13 +43,48 @@ class ResponseFactory
         else
             p "Directory is NOT protected."
             # Check if file exists.
-            #p "Resource: #{resource.resolve}"
-            if Pathname.new(resource.uri).exist?
-                return Response.new(200, "File exists.")
+            if Pathname.new(resource.uri).exist? || request.verb.eql?("PUT")
+                # Check if file is a script.
+                if resource.script?
+                    # Execute script and return its contents in the body.
+                    file = IO.popen(resource.uri)
+                    file_contents = file.readlines
+                    file.close
+                    return Response.new(200, file_contents.join(' '))
+                else
+                    # Determine request type and send proper response. 
+                    p request.verb
+                    handle_request(request, resource)
+                end
             else
                 return Response.new(404, "File does not exist")
             end
         end
         # Build and send response.
     end
+
+    def self.handle_request(request, resource)
+        case request.verb
+            when "GET"
+                # Return file content.
+                file = File.open(resource.uri, 'rb')
+                file_content = file.read
+                modified_time = file.mtime
+                p file_content
+                p modified_time
+                return Response.new(200, file_content)
+            when "HEAD"
+                # Return the resource without the body.
+                return Response.new(200, "")
+            when "DELETE"
+                # Delete the specified file.
+                File.delete(resource.uri)
+                return Response.new(204, "#{resource.uri} DELETED.")
+            when "PUT"
+                # Create the specified file.
+                File.new(resource.uri, "w")
+                return Response.new(201, "PUT request.")
+        end
+    end
+
 end
