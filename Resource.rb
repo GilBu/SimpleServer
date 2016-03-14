@@ -1,6 +1,8 @@
 #!/usr/bin/ruby
 
 class Resource
+    attr_reader :uri, :http_conf, :mime_types
+
     def initialize(uri, http_conf, mime_types)
         @uri = uri
         @http_conf = http_conf
@@ -10,21 +12,20 @@ class Resource
     # Return the absolute path of the resource.
     def resolve
        # Isolate uri directory path.
-       dir_path = @uri[/^\/[\S\/]*\//]
+       dir_path = @uri[/^\/[\S\/]*\//] if @uri != nil
        # Check if uri directory path is aliased.
-       p dir_path
        if @http_conf.alias(dir_path) != nil
             # Uri directory path was aliased. Replace the alias 
             # and store the uri it points to.
             path = "#{@uri.sub(dir_path, @http_conf.alias(@uri[dir_path]))}" 
        else
             # Not aliased.  Store the uri path to be resolved.
-            path = "#{@http_conf.document_root}#{@uri[1..-1]}" 
+            path = "#{@http_conf.document_root}#{@uri[1..-1]}" if @uri != nil
        end
 
        # If the uri is a directory path, append the index file. Else, it is
        # an absolute path to the file being resolved.
-       if path[-1].eql?('/')
+       if path != nil && path[-1].eql?('/')
            "#{path}index.html"
        else
            path

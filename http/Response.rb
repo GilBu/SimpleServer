@@ -1,6 +1,7 @@
 #!/usr/bin/ruby
 
 class Response
+    attr_accessor :headers
 
     # Add params lists.
     # Add response code hash.
@@ -19,13 +20,18 @@ class Response
     #
     # Returns The http response string.
     def to_s
+        headers = ''
+        @headers.each do | key, value |
+            headers = "#{key}: #{value}\n"
+        end
         "HTTP/#{@version} #{@response_code} #{@response_phrase}\n"\
         "Date: #{Time.now}\n"\
         "Connection: close\n"\
         "Server: csc667 Server Project\n"\
         "Content-Type: text/html\n"\
         "Content-Length: #{@body}.length\n"\
-        "Last-Modified: #{Time.now}\n\n"\
+        "Last-Modified: #{Time.now}\n"\
+        "#{headers}\n\n"\
         "#{@body}"
     end
 
