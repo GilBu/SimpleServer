@@ -36,10 +36,22 @@ class Response
 
     private def get_phrase(response_code)
         case response_code
-        when 200
-            "OK"
-        when 400
-            "NOT OK"
-        end
+            when 200
+                "OK"
+            when 201 
+                "Created"
+            when 304
+                "Not Modified"
+            when 400
+                "Bad Request"
+            when 401
+                "Unauthorized"
+            when 403
+                "Forbidden"
+            when 404
+                "Not Found"
+            when 500
+                "Internal Server Error"
+            end
     end
 end
