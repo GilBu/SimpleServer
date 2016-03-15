@@ -35,9 +35,10 @@ class SimpleServer
 
         # Wait for a connection.
         loop do
-#            Thread.new do
-                ServerWorker.new(server.accept, @httpd_config, @mime_types, logger).process_request
-#            end
+            socket = server.accept
+            Thread.new do
+                ServerWorker.new(socket, @httpd_config, @mime_types, logger).process_request
+            end
         end
     end
 
