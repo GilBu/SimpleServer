@@ -9,12 +9,16 @@ class Logger
         # Open log file for writting.
         @file = File.open(@filepath, "a")
         
+        # Build the log string.
+        log_entry = IPSocket.getaddress("localhost")
+#        log_entry << "\t#{request.headers['identd']}" # Ask for clarification.
+#        log_entry << "\t#{request.headers['auth']}"   # This one too.
+        log_entry << "\t#{Time.now}"
+        log_entry << "\t#{request.verb} #{request.uri} #{request.version}"
+        log_entry << "\t#{response.response_code}/#{response.response_phrase}"
+        log_entry << "\t#{response.to_s.bytesize}\n"
         # Log entry
-        request.headers.each do |key, value|
-            # PROPER HEADERS NEED TO BE SELECTED.
-            @file.write("#{key}: #{value}\n")
-        end
-        
+        @file.write(log_entry)
         # Close log fil.
         @file.close
     end

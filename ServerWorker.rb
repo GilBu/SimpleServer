@@ -15,10 +15,10 @@ class ServerWorker
     def process_request
        request = Request.new(@client).parse
        resource = Resource.new(request.uri, @config, @mimes)
-       # Factory needed a resource so I had to add a mimes object as a member. # Create the response.
+       # Factory needed a resource so I had to add a mimes object as a member. 
        response =  ResponseFactory.create(request ,resource, @config)
        @client.puts(response)
-       @client.close
        @logger.write(request, response)
+       @client.close
     end
 end

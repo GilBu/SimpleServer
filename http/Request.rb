@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 class Request
-    attr_reader :verb, :uri, :version, :headers, :body
+    attr_reader :stream, :verb, :uri, :version, :headers, :body
 
     def initialize(stream)
         @stream = stream

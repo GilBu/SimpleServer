@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 class Response
-    attr_accessor :headers
+    attr_accessor :headers, :response_code, :response_phrase
 
     # Add params lists.
     # Add response code hash.
@@ -28,7 +28,7 @@ class Response
         "Connection: close\n"\
         "Server: csc667 Server Project\n"\
         "Content-Type: text/html\n"\
-        "Content-Length: #{@body.length}\n"\
+        "Content-Length: #{@body.length+1}\n"\
         "Last-Modified: #{Time.now}\n"\
         "#{headers}\n\n"\
         "#{@body}"

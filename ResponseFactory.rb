@@ -21,7 +21,11 @@ class ResponseFactory
                         if htaccessChecker.authorized?
                             p "Authorized user."
                             # Check if file exists.
-                            handle_request(request, resource)
+                            begin 
+                                handle_request(request, resource)
+                            rescue
+                                return Response.new(404, "Not Found")
+                            end
                         else
                             p "Unauthorized user."
                             return Response.new(403, "Forbidden")
@@ -31,6 +35,7 @@ class ResponseFactory
                         p "No htpasswd file found."
                         return Response.new(401, "Unauthorized")
                     end
+
                 else
                     p "Requesting Authorization header."
                     response = Response.new(401, "Unauthorized")
@@ -46,16 +51,20 @@ class ResponseFactory
                 # Check if file exists.
                 if Pathname.new(resource.uri).exist? || request.verb.eql?("PUT")
                     # Check if file is a script.
-                    if resource.script?
-                        # Execute script and return its contents in the body.
-                        file = IO.popen(resource.uri)
-                        file_contents = file.readlines
-                        file.close
-                        return Response.new(200, file_contents.join(' '))
-                    else
-                        # Determine request type and send proper response. 
-                        p request.verb
-                        handle_request(request, resource)
+                    begin
+                        if resource.script?
+                            # Execute script and return its contents in the body.
+                            file = IO.popen(resource.uri)
+                            file_contents = file.readlines
+                            file.close
+                            return Response.new(200, file_contents.join(' '))
+                        else
+                            # Determine request type and send proper response. 
+                            p request.verb
+                            handle_request(request, resource)
+                        end
+                    rescue
+                        return Response.new(404, "Not Found")
                     end
                 else
                     return Response.new(404, "Not Found")
