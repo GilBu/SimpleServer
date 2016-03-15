@@ -8,7 +8,7 @@ class HtaccessChecker
     def initialize(path, headers, httpd_config)
         @path = path
         @headers = headers
-	@httpd_config = httpd_config
+        @httpd_config = httpd_config
     end
 
     def protected?
@@ -42,14 +42,13 @@ class HtaccessChecker
         end
     end
 
-# Checks if a file exists in a diretory structure.
-  private def exists?(file_name)
+    # Checks if a file exists in a diretory structure.
+    private def exists?(file_name)
       #root = "#{@httpd_config.document_root}"
       root = ''
       @path.split('/').each do |directory|
             root << directory << '/'
             # Prints the series of directories being searched for htaccess.
-#            p "#{root}"
               if Pathname.new(File::join(root, file_name)).exist?
                 @htaccess_path = "#{root}/#{file_name}"
               # htaccess found.
@@ -59,7 +58,7 @@ class HtaccessChecker
 
         # No htaccess found.
         return false
-  end
+    end
 
         # Private:  Splits a config file's lines into an array.
     #

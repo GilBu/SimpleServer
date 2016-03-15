@@ -33,9 +33,11 @@ class SimpleServer
         # Acknowledge the server is running.
         puts "Server started.  Listening on port #{@port}.\n"
 
-        # Wait for a connection.
+        # Event loop.
         loop do
+            # Wait for a connection.
             socket = server.accept
+            # Create a new thread to handle request
             Thread.new do
                 ServerWorker.new(socket, @httpd_config, @mime_types, logger).process_request
             end

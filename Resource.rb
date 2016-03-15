@@ -26,10 +26,8 @@ class Resource
        # If the uri is a directory path, append the index file. Else, it is
        # an absolute path to the file being resolved.
        if path != nil && path[-1].eql?('/')
-          #p path
             @uri = path << "index.html"
        else
-           #p path
            @uri = path
        end
     end

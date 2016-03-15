@@ -29,20 +29,6 @@ class Request
             end
         end
 
-        ### REMOVE LATER ###
-        # Build and return the request string so the 
-        # server can send it to the client for testing.
-        str_builder =  "#{@verb} #{@uri} #{@version}<br>\n"
-        @headers.each do |key, value|
-            str_builder << "#{key}: #{value}<br>\n"
-        end
-
-        # Print the request string to the console running the server.
-        puts "\n#{str_builder}\n"
-
-        # Return the request string so the server can send it in the
-        # body of the response to the client. 
-        ### END REMOVE LATER ###
         self
     end
 

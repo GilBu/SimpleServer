@@ -3,10 +3,6 @@
 class Response
     attr_accessor :headers, :response_code, :response_phrase
 
-    # Add params lists.
-    # Add response code hash.
-    # Add inner class for headers - with to_s method.
-
     def initialize(response_code,body, mime_type="text/html")
         @version = 1.1
         @response_code = response_code

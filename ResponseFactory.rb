@@ -8,46 +8,38 @@ class ResponseFactory
     def self.create(request, resource, httpd_config)
         begin
             # Check request format is valid. If not throw a 400 response.
-            p "Resource: #{resource.resolve}"
-            p "MimeType: #{resource.mime_type}"
+            resource.resolve
             htaccessChecker = HtaccessChecker.new(resource.uri, request.headers, httpd_config)
             if htaccessChecker.protected?
-                p "Protected directory! Checking authorization header."
-                # Check for Authorization header.
+                # Protected directory! Checking authorization header.
                 if request.headers["Authorization"] != nil
                     # Check if htpasswd is present.
                     if htaccessChecker.can_authorize?
                         # Validate user.
                         if htaccessChecker.authorized?
-                            p "Authorized user."
-                            # Check if file exists.
+                            # Authorized user.
                             begin 
                                 handle_request(request, resource)
                             rescue
                                 return Response.new(404, "Not Found")
                             end
                         else
-                            p "Unauthorized user."
+                            # Unauthorized user.
                             return Response.new(403, "Forbidden")
                         end
                     else
                         # No htpasswd file found.
-                        p "No htpasswd file found."
                         return Response.new(401, "Unauthorized")
                     end
 
                 else
-                    p "Requesting Authorization header."
+                    # Requesting Authorization header.
                     response = Response.new(401, "Unauthorized")
                     response.headers["WWW-Authenticate"] = "Basic realm=\"CSc667\""
                     return response
                 end
-
-                # else check un and pw against htpasswd.
-                # if invalid, send 403 response
-                # else check if file exists
             else
-                p "Directory is NOT protected."
+                # Directory is NOT protected.
                 # Check if file exists.
                 if Pathname.new(resource.uri).exist? || request.verb.eql?("PUT")
                     # Check if file is a script.
@@ -57,10 +49,9 @@ class ResponseFactory
                             file = IO.popen(resource.uri)
                             file_contents = file.readlines
                             file.close
-                            return Response.new(200, file_contents.join(' '), resource.mime_type)
+                            return Response.new(200, file_contents.join(' '))
                         else
                             # Determine request type and send proper response. 
-                            p request.verb
                             handle_request(request, resource)
                         end
                     rescue
@@ -70,12 +61,12 @@ class ResponseFactory
                     return Response.new(404, "Not Found")
                 end
             end
-            # Build and send response.
        rescue
             return Response.new(400, "Bad Request")
        end
     end
 
+    # Determines the type of reuest and sends the appropriate response.
     def self.handle_request(request, resource)
         case request.verb
             when "GET"
@@ -83,8 +74,6 @@ class ResponseFactory
                 file = File.open(resource.uri, 'rb')
                 file_content = file.read
                 modified_time = file.mtime
-                p file_content
-                p modified_time
                 return Response.new(200, file_content, resource.mime_type)
             when "HEAD"
                 # Return the resource without the body.
