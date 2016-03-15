@@ -38,7 +38,9 @@ class Resource
     def mime_type
         # Split uri on the extension and take the last element
         # element from the resulting array.
-        @uri.split('.')[-1]
+        if @mime_types != nil
+            @mime_types.for(@uri.split('.')[-1])
+        end
     end
 
     # Return true if a script resource was requested.

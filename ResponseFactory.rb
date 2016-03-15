@@ -57,7 +57,7 @@ class ResponseFactory
                             file = IO.popen(resource.uri)
                             file_contents = file.readlines
                             file.close
-                            return Response.new(200, file_contents.join(' '))
+                            return Response.new(200, file_contents.join(' '), resource.mime_type)
                         else
                             # Determine request type and send proper response. 
                             p request.verb
@@ -71,9 +71,9 @@ class ResponseFactory
                 end
             end
             # Build and send response.
-        rescue
+       rescue
             return Response.new(400, "Bad Request")
-        end
+       end
     end
 
     def self.handle_request(request, resource)
@@ -85,10 +85,10 @@ class ResponseFactory
                 modified_time = file.mtime
                 p file_content
                 p modified_time
-                return Response.new(200, file_content)
+                return Response.new(200, file_content, resource.mime_type)
             when "HEAD"
                 # Return the resource without the body.
-                return Response.new(200, "")
+                return Response.new(200, "", resource.mime_type)
             when "DELETE"
                 # Delete the specified file.
                 File.delete(resource.uri)

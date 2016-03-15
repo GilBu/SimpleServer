@@ -7,10 +7,11 @@ class Response
     # Add response code hash.
     # Add inner class for headers - with to_s method.
 
-    def initialize(response_code,body)
+    def initialize(response_code,body, mime_type="text/html")
         @version = 1.1
         @response_code = response_code
         @response_phrase = get_phrase(response_code)
+        @mime_type = mime_type
         @headers = Hash.new 
         @body = "#{body}"
     end
@@ -27,7 +28,7 @@ class Response
         "Date: #{Time.now}\n"\
         "Connection: close\n"\
         "Server: csc667 Server Project\n"\
-        "Content-Type: text/html\n"\
+        "Content-Type: #{@mime_type}\n"\
         "Content-Length: #{@body.length+1}\n"\
         "Last-Modified: #{Time.now}\n"\
         "#{headers}\n\n"\
